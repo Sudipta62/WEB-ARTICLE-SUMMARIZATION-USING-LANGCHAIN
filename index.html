@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Powered News Article Summary</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#summaryForm").submit(function(event){
+      event.preventDefault();
+      var url = $("#urlInput").val();
+      $("#summary").html(""); // Clear previous summary
+      $("#progress").html("Fetching website data..."); // Display progress message
+      // Show loading animation
+      $("#loading").css("display", "block");
+      // Simulate delay before fetching summary
+      setTimeout(function() {
+        $.ajax({
+          type: "POST",
+          url: "/summary",
+          data: { url: url },
+          success: function(response){
+            $("#progress").html("Generating summary..."); // Update progress message
+            // Hide loading animation
+            $("#loading").css("display", "none");
+            $("#summaryContent").html(response.summary); // Display summary
+            $("#summarySection").css("display", "block"); // Show summary section
+          },
+          error: function(xhr, status, error){
+            $("#progress").html("Error fetching summary: " + error); // Display error message
+            // Hide loading animation
+            $("#loading").css("display", "none");
+          }
+        });
+      }, 2000); // Delay of 2 seconds (2000 milliseconds)
+    });
+  });
+</script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  #summarySection {
+    display: none;
+    margin-top: 20px;
+  }
+  #loading {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+  }
+  #loading img {
+    width: 50px;
+    height: 50px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Website Summary</h1>
+    <form id="summaryForm">
+      <div class="form-group">
+        <label for="urlInput">Enter Website URL:</label>
+        <input type="text" class="form-control" id="urlInput" name="url">
+      </div>
+      <button type="submit" class="btn btn-primary">Show Summary</button>
+    </form>
+    <div id="progress"></div> <!-- Display progress messages here -->
+    <div id="loading">
+      <img src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" alt="Loading...">
+    </div>
+    <div id="summarySection">
+      <h2 class="mt-5">Summary</h2>
+      <div id="summaryContent"></div>
+    </div>
+  </div>
+</body>
+</html>
